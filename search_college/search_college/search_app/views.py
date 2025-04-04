@@ -60,19 +60,17 @@ def search_colleges(request):
     # Fetch all unique branches from the database
     branches = list(cutoff.objects.values_list('branch_name', flat=True).distinct())
 
-    # Fetch all colleges initially
+    # ✅ Always fetch all colleges initially
     colleges = cutoff.objects.all().order_by('-open_percentile')
 
+    # ✅ Only apply filters when there's a POST request
     if request.method == 'POST':
         item_searched = request.POST.get('search', '').strip()
         percentile_entered = request.POST.get('percentile_entered', '').strip()
         selected_branch = request.POST.get('branch', '').strip()
 
-        # Convert selected branch to its correct database value
+        # Convert selected branch to correct database value
         selected_branch_db = BRANCH_MAPPING.get(selected_branch, selected_branch)
-
-        print(f"🔹 Debug - Selected Branch: {selected_branch_db}")
-        print(f"🔹 Debug - Entered Percentile: {percentile_entered}")
 
         # Convert percentile to float if valid
         if percentile_entered:
@@ -81,7 +79,7 @@ def search_colleges(request):
             except ValueError:
                 percentile_entered_float = None
 
-        # Apply filters
+        # Apply filters only if values are provided
         if selected_branch_db:
             colleges = colleges.filter(branch_name__iexact=selected_branch_db)
 
@@ -91,10 +89,10 @@ def search_colleges(request):
         if percentile_entered_float is not None:
             colleges = colleges.filter(open_percentile__lte=percentile_entered_float)
 
-        print(f"🔹 Debug - Matching Colleges Count: {colleges.count()}")
+    print(f"🔹 Debug - Total Colleges Displayed: {colleges.count()}")  # Debugging
 
     context = {
-        'colleges': colleges,
+        'colleges': colleges,  # ✅ Always return all colleges
         'branches': branches,
         'item_searched': item_searched,
         'percentile_entered_float': percentile_entered_float,
