@@ -1,0 +1,39 @@
+{% extends 'navbar.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'stylesheets/home.css' %}">
+
+<style>
+    html {
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+    .main {
+        background-color: black;
+        width: 100vw;
+        height: 91vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+    .main a {
+        color: #0d6efd;
+        text-decoration: underline;
+        font-weight: bold;
+    }
+</style>
+
+<div class="main">
+    {% if user.is_authenticated %}
+        <h1>Welcome back, {{ user.username }}!</h1>
+        <a href="{% url 'home' %}">Click here to view all colleges</a>
+    {% else %}
+        <h1>Welcome to College Finder!</h1>
+        <p>Please <a href="{% url 'login' %}">login</a> to view all colleges.</p>
+    {% endif %}
+</div>
+
+{% endblock content %}
