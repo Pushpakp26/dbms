@@ -12,32 +12,29 @@
     <title>Institute Search Engine</title>
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
     <style>
-
-      .input{
+      .input {
         background-color: transparent;
         border: 1.5px solid white;
+        color: white;
       }
 
-      .input:hover{
+      .input:hover {
         background-color: white;
         border: 1.5px solid transparent;
-        transition: all;
-        transition-duration: 0.6s;
+        transition: all 0.6s;
       }
-      .searchbtn{
+
+      .searchbtn {
         background-color: white;
         border-color: white;
         color: black;
       }
-      .searchbtn:hover{
+
+      .searchbtn:hover {
         background-color: transparent;
         border-color: white;
         color: white;
-        transition: all;
-        transition-duration: 0.6s;
-      }
-      .input{
-        color: white;
+        transition: all 0.6s;
       }
     </style>
 </head>
@@ -56,25 +53,32 @@
               <span class="navbar-text text-light mr-3">
                   Welcome, {{ user.username }}!
               </span>
-              {% if not user.is_authenticated %}
-              <a href="{% url 'login' %}" class="btn btn-outline-light mr-2">Login</a>
-              {% endif %}
-<a href="{% url 'logout' %}" class="btn btn-outline-light mr-2">Logout</a>
+              <a href="{% url 'logout' %}" class="btn btn-outline-light mr-2">Logout</a>
 
+              <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'search_colleges' %}">
+                  {% csrf_token %}
+                  <input class="form-control mr-sm-2 input change_font_color" name="search" type="search" placeholder="College Name" aria-label="Search">
+                  <input class="form-control mr-sm-2 input change_font_color" type="text" name="percentile_entered" placeholder="Enter Percentile" aria-label="percentile_entered">
+                  
+                  <!-- ✅ New Branch Selection Dropdown (Added) -->
+                  <select name="branch" class="form-control">
+                    <option value="">Select Branch</option>
+                    <option value="CSE">Computer Science and Engineering</option>
+                    <option value="IT">Information Technology</option>
+                    <option value="EXTC">Electronics and Telecommunication Engg</option>
+                    <option value="MECH">Mechanical Engineering</option>
+                    <option value="CIVIL">Civil Engineering</option>
+                    <option value="AI&DS">Artificial Intelligence and Data Science</option>
+                </select>
+                
 
-<form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'search_colleges' %}">
-  {% csrf_token %}
-  <input class="form-control mr-sm-2 input change_font_color" name="search" type="search" placeholder="College name" aria-label="Search">
-  <input class="form-control mr-sm-2 input change_font_color" type="text" name="percentile_entered" placeholder="Enter percentile" aria-label="percentile_entered">
-  <button class="btn btn-outline-success my-2 my-sm-0 searchbtn" type="submit">Search</button>
-</form>
-
-          </form>
+                  <button class="btn btn-outline-success my-2 my-sm-0 searchbtn" type="submit">Search</button>
+              </form>
+          {% endif %}
         </div>
-      </nav>
-      {% endif %}
-      {% block content %}
-      
-      {% endblock content %}
-    </body>
-    </html>
+    </nav>
+
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>
