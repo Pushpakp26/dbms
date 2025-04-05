@@ -48,7 +48,7 @@ def home(request):
 def start(request):
     colleges = cutoff.objects.all().order_by('-open_percentile')
     context = {'colleges': colleges}
-    return render(request, 'search_colleges.html', context=context)  # Replace 'testing.html' with 'start.html'
+    return render(request, 'search_colleges.html', context=context)
 
 
 @login_required
@@ -56,32 +56,33 @@ def search_colleges(request):
     item_searched = ""
     percentile_entered_float = None
     selected_branch = ""
+    selected_status = ""
 
-    # Fetch all unique branches from the database
+    # ✅ Always fetch branches and status for the navbar dropdowns
     branches = list(cutoff.objects.values_list('branch_name', flat=True).distinct())
+    status_categories = list(cutoff.objects.values_list('status_category', flat=True).distinct())
 
-    # ✅ Always fetch all colleges initially
     colleges = cutoff.objects.all().order_by('-open_percentile')
 
-    # ✅ Only apply filters when there's a POST request
     if request.method == 'POST':
         item_searched = request.POST.get('search', '').strip()
         percentile_entered = request.POST.get('percentile_entered', '').strip()
         selected_branch = request.POST.get('branch', '').strip()
+        selected_status = request.POST.get('status_category', '').strip()
 
-        # Convert selected branch to correct database value
         selected_branch_db = BRANCH_MAPPING.get(selected_branch, selected_branch)
 
-        # Convert percentile to float if valid
         if percentile_entered:
             try:
                 percentile_entered_float = float(percentile_entered)
             except ValueError:
                 percentile_entered_float = None
 
-        # Apply filters only if values are provided
         if selected_branch_db:
             colleges = colleges.filter(branch_name__iexact=selected_branch_db)
+
+        if selected_status:
+            colleges = colleges.filter(status_category__iexact=selected_status)
 
         if item_searched:
             colleges = colleges.filter(college_name__icontains=item_searched)
@@ -89,13 +90,13 @@ def search_colleges(request):
         if percentile_entered_float is not None:
             colleges = colleges.filter(open_percentile__lte=percentile_entered_float)
 
-    print(f"🔹 Debug - Total Colleges Displayed: {colleges.count()}")  # Debugging
-
     context = {
-        'colleges': colleges,  # ✅ Always return all colleges
+        'colleges': colleges,
         'branches': branches,
+        'status_categories': status_categories,
         'item_searched': item_searched,
         'percentile_entered_float': percentile_entered_float,
         'selected_branch': selected_branch,
+        'selected_status': selected_status,
     }
     return render(request, 'search_colleges.html', context)
