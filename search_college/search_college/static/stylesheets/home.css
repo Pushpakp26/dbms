@@ -1,0 +1,56 @@
+body {
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
+.overlay {
+    background: url("{% static 'images/image.jpg' %}") no-repeat center center fixed;
+    background-size: cover;
+    background-color: rgba(0, 0, 0, 0.7); /* Overlay effect */
+    min-height: 100vh; /* Ensure the overlay takes full height */
+    padding: 20px;
+}
+
+.heading {
+    margin: 25px 0px;
+    text-align: center;
+    color: white;
+}
+
+.table1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    width: 100vw;
+}
+
+.table1_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(217, 217, 217, 0.1);
+    color: white;
+    margin: 10px;
+    padding: 10px 0px;
+}
+
+.table1_data_heading {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+}
+
+.table1_row > * {
+    padding: 0px 20px;
+}
+
+.table1_data1 { width: 10%; }
+.table1_data2 { width: 30%; }
+.table1_data3 { width: 15%; }
+.table1_data4 { width: 15%; }
+.table1_data5 { width: 15%; }
+.table1_data6 { width: 15%; }
