@@ -7,8 +7,8 @@ body {
 .overlay {
     background: url("{% static 'images/image.jpg' %}") no-repeat center center fixed;
     background-size: cover;
-    background-color: rgba(0, 0, 0, 0.7); /* Overlay effect */
-    min-height: 100vh; /* Ensure the overlay takes full height */
+    background-color: rgba(0, 0, 0, 0.7); 
+    min-height: 100vh; 
     padding: 20px;
 }
 

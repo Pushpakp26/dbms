@@ -4,7 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .models import cutoff
 
-# ✅ Mapping user-friendly dropdown values to actual database branch names
+
 BRANCH_MAPPING = {
     "CSE": "Computer Science and Engineering",
     "IT": "Information Technology",
@@ -58,7 +58,7 @@ def search_colleges(request):
     selected_branch = ""
     selected_status = ""
 
-    # ✅ Always fetch branches and status for the navbar dropdowns
+   
     branches = list(cutoff.objects.values_list('branch_name', flat=True).distinct())
     status_categories = list(cutoff.objects.values_list('status_category', flat=True).distinct())
 
@@ -100,3 +100,34 @@ def search_colleges(request):
         'selected_status': selected_status,
     }
     return render(request, 'search_colleges.html', context)
+
+import csv
+import io
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt
+def download_csv(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        results = data.get('results', [])
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="search_results.csv"'
+
+        writer = csv.writer(response)
+        # Write header
+        writer.writerow(['College Code', 'College Name', 'Branch Code', 'Branch Name', 'Status', 'Percentile Cutoff (Open)'])
+        
+        # Write data rows
+        for row in results:
+            writer.writerow([
+                row['college_code'],
+                row['college_name'],
+                row['branch_code'],
+                row['branch_name'],
+                row['status'],
+                row['percentile_cutoff']
+            ])
+        return response

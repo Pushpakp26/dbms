@@ -9,4 +9,5 @@ urlpatterns = [
     # Authentication
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+     path('download_csv/', views.download_csv, name='download_csv'),
 ]

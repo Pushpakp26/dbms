@@ -96,7 +96,7 @@
 </form> -->
 
 
-<!-- ✅ Display all colleges by default -->
+
 <table class="table1">
     <div class="table1_row table1_data_heading">
         <div class="table1_data1">College code</div>
@@ -154,5 +154,67 @@
     {% endfor %}
 </table>
 {% endif %}
+
+<!-- ✅ Download Button -->
+<div style="text-align: center; margin-top: 30px;">
+    <button id="download-btn" class="btn btn-outline-light">Download Results as CSV</button>
+</div>
+
+<!-- ✅ JavaScript for Download -->
+<script>
+document.getElementById("download-btn").addEventListener("click", function () {
+    const rows = [];
+    const tableRows = document.querySelectorAll(".table1_row:not(.table1_data_heading)");
+
+    tableRows.forEach(row => {
+        const cols = row.querySelectorAll("div");
+        if (cols.length === 6) {
+            rows.push({
+                college_code: cols[0].innerText.trim(),
+                college_name: cols[1].innerText.trim(),
+                branch_code: cols[2].innerText.trim(),
+                branch_name: cols[3].innerText.trim(),
+                status: cols[4].innerText.trim(),
+                percentile_cutoff: cols[5].innerText.trim()
+            });
+        }
+    });
+
+    fetch("/download_csv/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({ results: rows })
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "search_results.csv";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+
 
 {% endblock content %}
