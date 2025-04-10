@@ -65,6 +65,13 @@
     .search-form button {
         margin: 5px;
     }
+    #download-btn:hover {
+    background-color: #ffc107;
+    color: black;
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+}
+
 </style>
 
 <h1 class="heading">Search for a College</h1>
@@ -157,8 +164,11 @@
 
 <!-- ✅ Download Button -->
 <div style="text-align: center; margin-top: 30px;">
-    <button id="download-btn" class="btn btn-outline-light">Download Results as CSV</button>
+    <button id="download-btn" class="btn btn-outline-warning btn-lg fw-bold shadow-lg" style="border-radius: 50px; padding: 10px 30px;">
+        ⬇️ Download Results as CSV
+    </button>
 </div>
+
 
 <!-- ✅ JavaScript for Download -->
 <script>
