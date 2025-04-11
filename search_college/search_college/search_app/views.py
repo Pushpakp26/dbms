@@ -57,7 +57,7 @@ def search_colleges(request):
     percentile_entered_float = None
     selected_branch = ""
     selected_status = ""
-
+    is_search = True
    
     branches = list(cutoff.objects.values_list('branch_name', flat=True).distinct())
     status_categories = list(cutoff.objects.values_list('status_category', flat=True).distinct())
@@ -65,27 +65,31 @@ def search_colleges(request):
     colleges = cutoff.objects.all().order_by('-open_percentile')
 
     if request.method == 'POST':
+        is_search = False
         item_searched = request.POST.get('search', '').strip()
         percentile_entered = request.POST.get('percentile_entered', '').strip()
         selected_branch = request.POST.get('branch', '').strip()
         selected_status = request.POST.get('status_category', '').strip()
 
+        # Map the branch name if it's in the mapping
         selected_branch_db = BRANCH_MAPPING.get(selected_branch, selected_branch)
+
+        # Apply filters only if the corresponding value is provided
+        if item_searched:
+            colleges = colleges.filter(college_name__icontains=item_searched)
 
         if percentile_entered:
             try:
                 percentile_entered_float = float(percentile_entered)
+                colleges = colleges.filter(open_percentile__lte=percentile_entered_float)
             except ValueError:
-                percentile_entered_float = None
+                pass  # Ignore if input can't be converted to float
 
         if selected_branch_db:
             colleges = colleges.filter(branch_name__iexact=selected_branch_db)
 
         if selected_status:
             colleges = colleges.filter(status_category__iexact=selected_status)
-
-        if item_searched:
-            colleges = colleges.filter(college_name__icontains=item_searched)
 
         if percentile_entered_float is not None:
             colleges = colleges.filter(open_percentile__lte=percentile_entered_float)
@@ -98,7 +102,9 @@ def search_colleges(request):
         'percentile_entered_float': percentile_entered_float,
         'selected_branch': selected_branch,
         'selected_status': selected_status,
+        'is_search' : is_search,
     }
+    print(context['is_search'])
     return render(request, 'search_colleges.html', context)
 
 import csv

@@ -73,6 +73,7 @@
 }
 
 </style>
+{% if is_search %}
 
 <h1 class="heading">Search for a College</h1>
 
@@ -105,6 +106,7 @@
 
 
 <table class="table1">
+
     <div class="table1_row table1_data_heading">
         <div class="table1_data1">College code</div>
         <div class="table1_data2">College name</div>
@@ -126,13 +128,12 @@
     {% empty %}
     <p style="color: red; text-align: center;">No colleges found.</p>
     {% endfor %}
+    {% endif %}
 </table>
 
-{% if item_searched %}
-<h1 class="heading">Searched for '{{ item_searched }}'
-    {% if percentile_entered_float != 0 %}
-        with percentile {{ percentile_entered_float }}
-    {% endif %}
+
+<h1 class="heading">
+    Collage With Applied Filters Searched
 </h1>
 
 <table class="table1">
@@ -160,7 +161,6 @@
     <p style="color: red; text-align: center;">No colleges found for this search.</p>
     {% endfor %}
 </table>
-{% endif %}
 
 <!-- ✅ Download Button -->
 <div style="text-align: center; margin-top: 30px;">
